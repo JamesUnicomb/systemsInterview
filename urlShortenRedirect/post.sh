@@ -1,3 +1,3 @@
-curl -d '{"key1":"value1", "key2":"value2"}' \
+curl -d '{"url":"http://www.yahoo.com"}' \
      -H "Content-Type: application/json" \
      -X POST http://localhost:8081/

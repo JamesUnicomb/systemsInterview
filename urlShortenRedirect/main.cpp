@@ -9,11 +9,13 @@ using namespace web::http::experimental::listener;
 #include <unordered_map>
 #include <set>
 #include <string>
+#include "md5.h"
 using namespace std;
 
 #define TRACE(msg) wcout << msg
 #define TRACE_ACTION(a, k, v) wcout << a << L" (" << k << L", " << v << L")\n"
 
+string baseurl = "http://localhost:8081/";
 unordered_map<string, string> dictionary;
 
 void handle_get(http_request request)
@@ -68,20 +70,29 @@ void handle_post(http_request request)
         request,
         [](json::value const &jvalue, json::value &answer)
         {
-            wcout << "TESTING TESTING" << endl;
+            if (jvalue.has_field(utility::string_t("url")))
+            {
+                string url = jvalue.as_object().find(utility::string_t("url"))->second.as_string().c_str();
+                string sh = md5(url);
+
+                dictionary.insert({sh, url});
+
+                string r = baseurl + sh;
+                answer[utility::string_t("redirect")] = json::value::string(r);
+            }
+            else
+            {
+                answer[utility::string_t("error")] = json::value::string(utility::string_t("url not input"));
+            }
         });
 }
 
 int main()
 {
-    http_listener listener("http://localhost:8081/");
+    http_listener listener(baseurl);
 
     listener.support(methods::GET, handle_get);
     listener.support(methods::POST, handle_post);
-
-    dictionary.insert({"google", "http://www.google.com"});
-    dictionary.insert({"yahoo", "http://www.yahoo.com"});
-    dictionary.insert({"bing", "http://www.bing.com"});
 
     try
     {
