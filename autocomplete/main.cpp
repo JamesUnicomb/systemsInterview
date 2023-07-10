@@ -78,7 +78,7 @@ int numChildren(Node *root)
     return count;
 }
 
-void display(Node *root, char prefix[], char str[], int level)
+void display(Node *root, const char prefix[], char str[], int level)
 {
     if (root->isEndOfWord)
     {
@@ -115,6 +115,11 @@ int main()
     char str[26];
 
     int count = 0;
-    cout << numChildren(search(root, "te")) << endl;
-    display(search(root, "te"), "te", str, level);
+    string query;
+
+    cout << "enter query string: ";
+
+    cin >> query;
+    cout << numChildren(search(root, query)) << endl;
+    display(search(root, query), query.c_str(), str, level);
 }
