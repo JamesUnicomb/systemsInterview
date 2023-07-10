@@ -1,6 +1,5 @@
 {
     "files.associations": {
-        "ostream": "cpp",
         "*.dat": "cpp",
         "iostream": "cpp",
         "*.ipp": "cpp",
